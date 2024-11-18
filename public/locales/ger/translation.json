@@ -1,0 +1,32 @@
+{
+	"appTitle": "Responsive Schublade",
+	"searchPlaceholder": "Suchen…",
+	"userInputMask": "Benutzereingabemaske",
+	"adminOverview": "Admin Übersicht",
+	"websiteUrl": "Webseiten-URL",
+	"go": "Los",
+	"output": "Ausgabe",
+	"test": "Testen",
+	"copy": "Kopieren",
+	"addNew": "Neu hinzufügen",
+	"id": "ID",
+	"url": "URL",
+	"ttlInSeconds": "TTL in Sekunden",
+	"dateCreated": "Erstellungsdatum",
+	"dateModified": "Änderungsdatum",
+	"editUrl": "URL BEARBEITEN",
+	"webUrl": "Web-URL",
+	"save": "SPEICHERN",
+	"cancel": "ABBRECHEN",
+	"update": "AKTUALISIEREN",
+	"addNewUrl": "Neue URL hinzufügen",
+	"loading": "Wird geladen...",
+	"NoUrlsAvailable": "Keine URLs verfügbar"
+
+
+
+
+
+
+
+}

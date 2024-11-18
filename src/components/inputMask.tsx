@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
 import { TextField, Button, Box } from '@mui/material';
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { useShortenedUrl } from '../hooks/useShortenedUrl';
 import { useUrlContext } from '../context/urlContext';
 
+import { useTranslation } from 'react-i18next';
+import '../i18n';
 
-const InputMask: React.FC = () => {
+
+export default function InputMask(){
+
+  const { t } = useTranslation();
+
   const [inputUrl, setInputUrl] = useState('');
   const { shortenedUrl, shortenUrl } = useShortenedUrl(inputUrl);
   const { lastUrl, setLastUrl } = useUrlContext();
@@ -15,32 +22,35 @@ const InputMask: React.FC = () => {
   };
 
   return (
-    <Box mt={4} width="100%">
-      <Box width="50%" display="flex" flexDirection="row">
+    <Box mt={4} width="100%" >
+      <Box width="100%" display="flex" flexDirection="column" justifyContent='center' alignItems='center'>
         <TextField
           id='outlined-basic'
-          label="Website Url"
+          label={t('websiteUrl')}
           value={inputUrl}
           onChange={(e) => setInputUrl(e.target.value)}
-          fullWidth
+          style={{width: '40%'}}
+          
+          
         />
-        <Button onClick={handleShorten}>Go</Button>
+        <Button variant='contained' onClick={handleShorten} style={{marginTop: '2%', height:' 50px', width: '150px', backgroundColor: "#342BC2" }}>{t('go')}</Button>
       </Box>
 
       {shortenedUrl && (
-        <Box mt={2} width="50%" display="flex" flexDirection="row">
+        <Box mt={5} width="100%" display="flex" flexDirection="column" justifyContent='center' alignItems='center'>
           <TextField
-            label="Output"
+            label={t('output')}
             value={shortenedUrl}
-            fullWidth
+            style={{width: '40%'}}
             InputProps={{ readOnly: true }}
           />
-          <Button onClick={() => window.open(shortenedUrl, '_blank')}>Test</Button>
-          <Button onClick={() => navigator.clipboard.writeText(shortenedUrl)}>Copy</Button>
+          <Box  mt={5} display="flex" flexDirection="row">
+            <Button variant='contained' onClick={() => window.open(shortenedUrl, '_blank')} style={{height:' 50px', width: '150px',backgroundColor: "#342BC2" }}>{t('test')}</Button>
+            <Button variant='contained' startIcon={<ContentCopyIcon />}  onClick={() => navigator.clipboard.writeText(shortenedUrl)} style={{marginLeft: '5%', height:' 50px', width: '150px', backgroundColor: "#342BC2" }}>{t('copy')}</Button>
+
+          </Box>
         </Box>
       )}
     </Box>
   );
 };
-
-export default InputMask;

@@ -1,0 +1,27 @@
+{
+	"appTitle": "Responsive Drawer",
+	"searchPlaceholder": "Search…",
+	"userInputMask": "User Input Mask",
+	"adminOverview": "Admin Overview",
+	"websiteUrl": "Website Url",
+	"go": "Go",
+	"output": "Output",
+	"test": "Test",
+	"copy": "Copy",
+	"addNew": "Add New",
+	"id": "ID",
+	"url": "URL",
+	"ttlInSeconds": "TTl In Seconds",
+	"dateCreated": "Date Created",
+	"dateModified": "Date Modified",
+	"editUrl": "EDIT URL",
+	"webUrl": "Web Url",
+	"save": "SAVE",
+	"cancel": "CANCEL",
+	"update": "UPDATE",
+	"addNewUrl": "Add New Url",
+	 "loading": "Loading...",
+	 "NoUrlsAvailable": "No URLs available"
+
+  }
+  

@@ -1,94 +1,97 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import {fetchUrlAction, deleteUrlAction} from '../redux/urlActions'
-import { RootState, AppDispatch } from "../redux/store"; 
-import ResponsiveDialog from './createUrlModal'
-import { Typography } from '@mui/material';
-
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Typography,
+} from "@mui/material";
+import { Delete as DeleteIcon, Edit as EditIcon, AddOutlined as AddOutlinedIcon } from "@mui/icons-material";
+import { fetchUrlAction, deleteUrlAction } from "../redux/urlActions";
+import { RootState, AppDispatch } from "../redux/store";
+import ResponsiveDialog from "./createUrlModal";
+import { useTranslation } from "react-i18next";
+import "../i18n";
 
 export default function AdminOverview() {
+  const { t } = useTranslation();
+  const dispatch = useDispatch<AppDispatch>();
+  const { data, loading, error } = useSelector((state: RootState) => state.urlReducer);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogMode, setDialogMode] = useState<"create" | "edit">("create");
+  const [initialData, setInitialData] = useState<{ id: string; webUrl: string; ttlInSeconds: number } | null>(null);
 
-	const dispatch = useDispatch<AppDispatch>();
-	const { data, loading, error } = useSelector((state:RootState)=> state.urlReducer)
-	const [open, setOpen] = useState(false)
-	const [dialogOpen, setDialogOpen] = useState(false);
-	const [dialogMode, setDialogMode] = useState<"create" | "edit">("create");
-	const [initialData, setInitialData] = useState<{ id: string; webUrl: string; ttlInSeconds: number } | null>(null);
+  useEffect(() => {
+    dispatch(fetchUrlAction());
+  }, [dispatch]);
 
-	function deleteUrl(id:string) {
-		dispatch(deleteUrlAction(id))
-	}
+  const handleOpenDialog = (
+    mode: "create" | "edit",
+    data?: { id: string; webUrl: string; ttlInSeconds: number }
+  ) => {
+    setDialogMode(mode);
+    setInitialData(data || null);
+    setDialogOpen(true);
+  };
 
-	const handleOpenDialog = (mode: "create" | "edit", data?: { id: string; webUrl: string; ttlInSeconds: number }) => {
-		setDialogMode(mode);
-		setInitialData(data || null);
-		setDialogOpen(true);
-	  };
+  const handleCloseDialog = () => setDialogOpen(false);
 
-	const handleCloseDialog = () => {
-		setDialogOpen(false);
-	  };
+  const deleteUrl = (id: string) => dispatch(deleteUrlAction(id));
 
-	useEffect( ()=>{
-		dispatch(fetchUrlAction())
-	},[dispatch])
+  const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString();
 
-	if (loading) return <Typography>Loading...</Typography>;
-	if (error) return <Typography>Error: {error}</Typography>; 
-	if (!data || data.length === 0) return <Typography>No URLs available</Typography>;
+  if (loading) return <Typography>{t("loading")}</Typography>;
+  if (error) return <Typography>{error}</Typography>;
+  if (!data || data.length === 0) return <Typography>{t("NoUrlsAvailable")}</Typography>;
+
   return (
-	<>
-		<TableContainer component={Paper} style={{width: '100%'}}>
-		<Table sx={{ width: '100%' }} aria-label="simple table">
-			<TableHead>
-			<TableRow>
-				<TableCell>
-					<AddOutlinedIcon style={{cursor: 'pointer'}} onClick={() => handleOpenDialog("create")}/> Add New</TableCell>
-				<TableCell align="right">ID</TableCell>
-				<TableCell align="center">URL</TableCell>
-				<TableCell align="right">TTL seconds</TableCell>
-				<TableCell align="right">Date Created</TableCell>
-				<TableCell align="right">Date Modified</TableCell>
-
-			</TableRow>
-			</TableHead>
-			{data&&data.length > 0 ? (
-				<TableBody>
-
-				{data.map((row: { id: string, url: string, ttlInSeconds: number,  createdDate: string,  modifiedDate: string  }, index: number) => (
-					<TableRow
-					key={index}
-					>
-					<TableCell  scope="row">
-						<EditIcon onClick={() => handleOpenDialog("edit", { id: row.id, webUrl: row.url, ttlInSeconds: row.ttlInSeconds })} style={{cursor: 'pointer'}}/> 
-						<DeleteIcon onClick={()=>deleteUrl(row.id)} style={{cursor: 'pointer'}}/>
-					</TableCell>
-					<TableCell align="right">{row.id}</TableCell>
-					<TableCell align="center">{row.url}</TableCell>
-					<TableCell align="right">{row.ttlInSeconds}</TableCell>
-					<TableCell align="right">{row.createdDate}</TableCell>
-					<TableCell align="right">{row.modifiedDate}</TableCell>
-
-					</TableRow>
-				))}
-				</TableBody>
-
-			):  (
-				<p>No data available</p>
-			)}
-		</Table>
-		</TableContainer>
-		<ResponsiveDialog open={dialogOpen}  handleClose={handleCloseDialog} mode={dialogMode} initialData={initialData || {id: '', webUrl: '', ttlInSeconds: 0}}/>	
-	</>
+    <>
+      <TableContainer component={Paper} sx={{ width: "100%", mt: 3 }}>
+        <Table aria-label="URLs table">
+          <TableHead sx={{ backgroundColor: "#342BC2" }}>
+            <TableRow>
+              <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                <AddOutlinedIcon sx={{ cursor: "pointer" }} onClick={() => handleOpenDialog("create")} /> {t("addNew")}
+              </TableCell>
+              {["id", "url", "ttlInSeconds", "dateCreated", "dateModified"].map((header) => (
+                <TableCell key={header} align="center" sx={{ color: "white", fontWeight: "bold" }}>
+                  {t(header)}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data.map((row, index) => (
+              <TableRow key={index}>
+                <TableCell>
+                  <EditIcon
+                    sx={{ cursor: "pointer", mr: 1 }}
+                    onClick={() =>
+                      handleOpenDialog("edit", { id: row.id, webUrl: row.url, ttlInSeconds: row.ttlInSeconds })
+                    }
+                  />
+                  <DeleteIcon sx={{ cursor: "pointer" }} onClick={() => deleteUrl(row.id)} />
+                </TableCell>
+                <TableCell align="center">{row.id}</TableCell>
+                <TableCell align="center">{row.url}</TableCell>
+                <TableCell align="center">{row.ttlInSeconds}</TableCell>
+                <TableCell align="center">{formatDate(row.createdDate)}</TableCell>
+                <TableCell align="center">{formatDate(row.modifiedDate)}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <ResponsiveDialog
+        open={dialogOpen}
+        handleClose={handleCloseDialog}
+        mode={dialogMode}
+        initialData={initialData || { id: "", webUrl: "", ttlInSeconds: 0 }}
+      />
+    </>
   );
 }

@@ -12,19 +12,25 @@ import TextField from '@mui/material/TextField';
 import { useTheme } from '@mui/material/styles';
 import { createNewUrlAction,updateUrlAction, resetUrlCreated } from '../redux/urlActions';
 
-interface ResponsiveDialogProps {
+import { useTranslation } from 'react-i18next';
+import '../i18n';
+
+interface UlrModalProps {
   open: boolean;
   handleClose: () => void;
   mode: "create" | "edit";
   initialData?: { id: string; webUrl: string; ttlInSeconds: number };
 }
 
-export default function ResponsiveDialog({
+export default function UlrModal({
 	open,
 	handleClose,
 	mode,
 	initialData = { id: '', webUrl: '', ttlInSeconds: 0 },
-  }: ResponsiveDialogProps) {
+  }: UlrModalProps) {
+
+  const { t } = useTranslation();
+
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const [inputs, setInputs] = useState(initialData);
@@ -66,13 +72,13 @@ export default function ResponsiveDialog({
         fullWidth
       >
         <DialogTitle id="responsive-dialog-title">
-          {mode === 'create' ? 'Add New URL' : 'Edit URL'}
+          {mode === 'create' ? t("addNewUrl") : t("editUrl")}
         </DialogTitle>
         <DialogContent>
           <DialogContentText style={{ display: 'flex', flexDirection: 'column' }} gap={3}>
             <TextField
               id="outlined-basic"
-              label="Web Url"
+              label={t("webUrl")}
               variant="outlined"
               name="webUrl"
               value={inputs.webUrl}
@@ -80,7 +86,7 @@ export default function ResponsiveDialog({
             />
             <TextField
               id="outlined-basic"
-              label="Ttl In Seconds"
+              label={t("ttlInSeconds")}
               variant="outlined"
               name="ttlInSeconds"
               value={inputs.ttlInSeconds}
@@ -89,7 +95,7 @@ export default function ResponsiveDialog({
             />
             <TextField
               id="outlined-basic"
-              label="Id"
+              label={t("id")}
               variant="outlined"
               name="id"
               value={inputs.id}
@@ -100,10 +106,10 @@ export default function ResponsiveDialog({
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleSave}>
-            {mode === 'create' ? 'Save' : 'Update'}
+            {mode === 'create' ? t('save') : t('update')}
           </Button>
           <Button onClick={handleClose} autoFocus>
-            Cancel
+            {t('cancel')}
           </Button>
         </DialogActions>
       </Dialog>
